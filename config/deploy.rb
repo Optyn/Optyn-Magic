@@ -1,4 +1,5 @@
 require 'rvm/capistrano'
+require 'bundler/capistrano'
 
 set :user, "deploy"
 set :application, "optyn_magic"
@@ -27,7 +28,8 @@ after 'deploy:update_code', 'deploy:create_symlinks'
 after 'deploy:update_code', 'deploy:migrate'
 after "deploy", "deploy:cleanup"
 after "deploy", "resque:restart"
-after "deploy", "rvm:trust_rvmrc"
+after "deploy", "rvm:create_rvmrc"
+after "rvm:create_rvmrc", "rvm:trust_rvmrc"
 
 
 namespace :deploy do
@@ -61,5 +63,9 @@ end
 namespace :rvm do
   task :trust_rvmrc do
     run "rvm rvmrc trust #{release_path}"
+  end
+
+  task :create_rvmrc do
+    run "echo 'rvm use #{rvm_ruby_string}' > #{release_path}/.rvmrc"
   end
 end
