@@ -20,11 +20,15 @@ ssh_options[:keys] = [File.join(ENV["HOME"], ".ssh", "id_rsa")]
 
 set :rvm_ruby_string, "ruby-1.9.3-p385@mail"
 set :rvm_type, :user
+set :whenever_command, "whenever"
+require "whenever/capistrano"
 
 after 'deploy:update_code', 'deploy:create_symlinks'
 after 'deploy:update_code', 'deploy:migrate'
-after "deploy:update_code", "deploy:cleanup"
-after "deploy:update_code", "resque:restart"
+after "deploy", "deploy:cleanup"
+after "deploy", "resque:restart"
+after "deploy", "rvm:trust_rvmrc"
+
 
 namespace :deploy do
   desc 'Copy database.yml from shared to current folder'
@@ -52,5 +56,10 @@ namespace :resque do
     stop
     start
   end
+end
 
+namespace :rvm do
+  task :trust_rvmrc do
+    run "rvm rvmrc trust #{release_path}"
+  end
 end

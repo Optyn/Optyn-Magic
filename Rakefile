@@ -1,10 +1,10 @@
 require "rubygems"
 require "bundler/setup"
-
-require 'pg'
 require 'active_record'
 require 'yaml'
 require "resque/tasks"
+
+Dir[File.join(File.dirname(__FILE__),'lib/tasks/*.rake')].each { |f| load f }
 
 task "resque:setup" do
   #raise "Please set your RESQUE_WORKER variable to true" unless ENV['RESQUE_WORKER'] == "true"

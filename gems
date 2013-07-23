@@ -1,7 +1,10 @@
 gem install oauth2
 gem install capistrano
-gem install capistrano-rvm
+gem install rvm-capistrano
 gem install railsless-deploy
 gem install activerecord
 gem install mail
 gem install httparty
+gem install resque
+gem install pg
+gem install whenever

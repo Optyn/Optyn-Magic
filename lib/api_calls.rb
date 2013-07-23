@@ -14,7 +14,8 @@ class ApiCalls
   attr_accessor :access_token
 
   def initialize
-    self.credentials = YAML::load(File.open('../config/app_credentials.yml'))
+    project_root = File.dirname(File.absolute_path(__FILE__)) + '/../'
+    self.credentials = YAML::load(File.open(project_root + 'config/app_credentials.yml'))
     self.login
   end
 
@@ -66,4 +67,3 @@ end
 
 
 
-p ApiCalls.instance.create_message('vitaliyk@interlink-ua.com','optyneemx1i9s_gap.com@optynmail.com', 'Hello World', 'Test')
