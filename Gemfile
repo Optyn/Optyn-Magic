@@ -4,6 +4,7 @@ source 'https://rubygems.org'
 ruby '1.9.3'
 
 gem 'pg'
+gem 'rake'
 gem 'oauth2'
 gem 'capistrano'
 gem 'rvm-capistrano'
