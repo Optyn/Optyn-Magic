@@ -60,7 +60,8 @@ class ApiCalls
       self.create_message(sender, receiver, content, subject)
     end
     return true
-  rescue Exception
+  rescue Exception => e
+    puts e.message
     return false
   end
 end
