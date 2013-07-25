@@ -54,12 +54,18 @@ class ApiCalls
   def create_message sender, receiver, content, subject
     shop = receiver.scan(/_(.*)@/i).flatten.first
     email = receiver.gsub(/_(.*)@/i, '@')
-    res = HTTParty.post("#{self.credentials['host']}/api/merchants/messages/create_virtual.json", {query: {access_token: self.access_token, message: {content: content, subject: subject, from: sender}, shop: shop, email: email}, headers: {'Cookie' => self.session_cookie}})
+    resp = false
+    res = HTTParty.post("#{self.credentials['host']}/api/merchants/messages/create_virtual.json", {body: {access_token: self.access_token, message: {content: content, subject: subject, from: sender}, shop: shop, email: email}, headers: {'Cookie' => self.session_cookie}})
     if res.code == 401
       self.get_authentication_code
-      self.create_message(sender, receiver, content, subject)
+      resp = self.create_message(sender, receiver, content, subject)
+    elsif res.code == 422
+      p res.body
+      resp = false
+    else
+      resp = true
     end
-    return true
+    return resp
   rescue Exception => e
     puts e.message
     return false
