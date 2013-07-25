@@ -16,12 +16,13 @@ class EmailProcessor
 
   def self.perform(content)
     mail = Mail.read_from_string(content.gsub('X-Original-To', 'To'))
+    part = mail
     if mail.multipart?
-      part = mail.parts.first rescue nil
+      part = mail.parts.select { |p| p.content_type =~ /text\/html/ }.first
+      part ||= mail.parts.select { |p| p.content_type =~ /text\/plain/ }.first
+      part ||= mail.parts.first
     end
-    unless part.nil?
-      message = part.body.decoded
-    end
+    message = part.try(:body).try(:decoded)
     Email.create(content: message, from: mail.from.try(:first), to: mail.to.try(:first), subject: mail.subject)
   end
 end
