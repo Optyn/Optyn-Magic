@@ -16,6 +16,12 @@ class EmailProcessor
 
   def self.perform(content)
     mail = Mail.read_from_string(content.gsub('X-Original-To', 'To'))
-    Email.create(content: mail.body.decoded, from: mail.from.try(:first), to: mail.to.try(:first), subject: mail.subject)
+    if mail.multipart?
+      part = mail.parts.first rescue nil
+    end
+    unless part.nil?
+      message = part.body.decoded
+    end
+    Email.create(content: message, from: mail.from.try(:first), to: mail.to.try(:first), subject: mail.subject)
   end
 end
