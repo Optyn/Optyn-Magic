@@ -64,6 +64,3 @@ class ApiCalls
     return false
   end
 end
-
-
-
