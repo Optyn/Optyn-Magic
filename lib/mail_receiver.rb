@@ -16,4 +16,4 @@ class EmailProcessor
   @queue = :email_processor
 end
 
-MailReceiver.new($stdin.read)
+MailReceiver.new($stdin.read.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => ''))
