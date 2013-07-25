@@ -16,6 +16,7 @@ namespace :messages do
     Email.where(sent: false).each { |email|
       is_sent = ApiCalls.instance.create_message(email.from, email.to, email.content, email.subject)
       email.update_attribute(:sent,  is_sent)
+      puts "Email: #{email.id} was sent: #{is_sent}"
     }
   end
 end

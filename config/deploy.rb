@@ -37,6 +37,7 @@ namespace :deploy do
   task :create_symlinks, :roles => :app, :except => {:no_release => true} do
     puts "Running symlinks"
     run "ln -s #{shared_path}/config/database.yml #{current_release}/config/database.yml"
+    run "ln -s #{shared_path}/config/app_credentials.yml #{current_release}/config/app_credentials.yml"
   end
 
   desc "Migrating the database"
