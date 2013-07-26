@@ -27,7 +27,7 @@ require "whenever/capistrano"
 after 'deploy:update_code', 'deploy:create_symlinks'
 after 'deploy:update_code', 'deploy:migrate'
 after "deploy", "deploy:cleanup"
-after "deploy", "resque:restart"
+after "deploy", "resque:restart_pool"
 after "deploy", "rvm:create_rvmrc"
 after "rvm:create_rvmrc", "rvm:trust_rvmrc"
 
@@ -58,6 +58,12 @@ namespace :resque do
   task :restart, roles => :app do
     stop
     start
+  end
+
+  task :restart_pool, :roles => :app, :except => {:no_release => true} do
+    run "if [ -e #{release_path}/tmp/pids/resque-pool.pid ]; then kill -s QUIT $(cat #{release_path}/tmp/pids/resque-pool.pid) ; rm #{release_path}/tmp/pids/resque-pool.pid ;fi"
+    run "echo starting pool daemon"
+    run "cd #{release_path} && resque-pool --daemon"
   end
 end
 
