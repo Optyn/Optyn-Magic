@@ -38,6 +38,8 @@ namespace :deploy do
     puts "Running symlinks"
     run "ln -s #{shared_path}/config/database.yml #{current_release}/config/database.yml"
     run "ln -s #{shared_path}/config/app_credentials.yml #{current_release}/config/app_credentials.yml"
+    run "ln -s #{shared_path}/log #{current_release}/log"
+    run "ln -s #{shared_path}/tmp #{current_release}/tmp"
   end
 
   desc "Migrating the database"
@@ -63,7 +65,7 @@ namespace :resque do
   task :restart_pool, :roles => :app, :except => {:no_release => true} do
     run "if [ -e #{release_path}/tmp/pids/resque-pool.pid ]; then kill -s QUIT $(cat #{release_path}/tmp/pids/resque-pool.pid) ; rm #{release_path}/tmp/pids/resque-pool.pid ;fi"
     run "echo starting pool daemon"
-    run "cd #{release_path} && resque-pool --daemon"
+    run "cd #{release_path} && bundle exec resque-pool --daemon"
   end
 end
 
