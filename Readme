@@ -20,3 +20,5 @@ Optyn Magic App:
         - It runs by cron every 5 minutes (Using whenever gem). It find all unsent emails from database and send them to optyn.com
     lib/api_calls.rb
         - Contain methods for connection to optyn.com
+Deploy
+    To deploy just run 'cap deploy'
