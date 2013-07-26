@@ -1,0 +1,22 @@
+Postfix configuration:
+    Most off all I used default postfix configuration. Just few thing were changed.
+    /etc/postfix/main.cf:
+        added parameter 'recipient_canonical_maps = regexp:/etc/postfix/recipient_canonical'
+        - This means when postfix receive emails it will map it to /etc/postfix/recipient_canonical file.
+    /etc/postfix/recipient_canonical
+        added string '/optyn.+_..+@optynmail.com/ apps'
+        - This means that all emails which mach this regexp will be redirected to apps@optynmail.com
+    /etc/aliases
+        added alias 'apps: "|/home/deploy/.rvm/bin/ruby-1.9.3-p385@mail /srv/apps/optyn_magic/current/lib/mail_receiver.rb"'
+        - Redirects all emails from apps@optynmail.com to ruby script mail_receiver.rb
+Optyn Magic App:
+    It`s a simple ruby application. It has structure similar to rails because I used some rails gems which required such structure.
+    lib/mail_receiver.rb
+        - This script get emails from postfix. It should be extremely lite. Because postfix will load this file in memory every time
+        when it receive an email. And high email traffic can load the server. This script just send all emails to rescue queue.
+    lib/emails_processor.rb
+        - It pull emails from rescue queue and store them into database.
+    rake messages:create
+        - It runs by cron every 5 minutes (Using whenever gem). It find all unsent emails from database and send them to optyn.com
+    lib/api_calls.rb
+        - Contain methods for connection to optyn.com
