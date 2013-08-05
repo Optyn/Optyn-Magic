@@ -13,12 +13,13 @@ ActiveRecord::Base.establish_connection(connection_details)
 namespace :messages do
   desc "Make Api call to remote server"
   task :create do
-    Email.where(sent: false).each { |email|
+    emails = Email.where("emails.sent = false AND (emails.gone IS NULL OR emails.gone = false)") 
+    emails.each { |email|
       puts "====================="
       puts "Time #{Time.now}"
-      is_sent = ApiCalls.instance.create_message(email.from, email.to, email.html_message, email.subject)
-      email.update_attribute(:sent,  is_sent)
-      puts "Email: #{email.id} was sent: #{is_sent}"
+      is_sent, is_gone = ApiCalls.instance.create_message(email.from, email.to, email.html_message, email.subject)
+      email.update_attributes(sent: is_sent, gone: is_gone)
+      puts "Email: #{email.id} was sent: #{is_sent}. Email is gone? #{is_gone}"
     }
   end
 end
