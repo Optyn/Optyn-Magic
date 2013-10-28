@@ -48,7 +48,7 @@ class ApiCalls
 
   def get_access_token
     res = HTTParty.post("#{self.credentials['host']}/oauth/token.json", {query: {client_id: self.credentials['client_id'], client_secret: self.credentials['client_secret'], code: self.authentication_code, grant_type: 'authorization_code', redirect_uri: self.credentials['redirect_uri']}})
-    self.access_token = JSON.parse(res.body)['data']['access_token']
+    self.access_token = JSON.parse(res.body)['access_token']
   end
 
   def create_message sender, receiver, content, subject
